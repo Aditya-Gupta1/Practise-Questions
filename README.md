@@ -641,3 +641,655 @@ for _ in range(t):
         j += 1
     print()
 ```
+## 29. You are given weights and values of N items, put these items in a knapsack of capacity W to get the maximum total value in the knapsack. Note that we have only one quantity of each item.
+In other words, given two integer arrays val[0..N-1] and wt[0..N-1] which represent values and weights associated with N items respectively. Also given an integer W which represents knapsack capacity, find out the maximum value subset of val[] such that sum of the weights of this subset is smaller than or equal to W. You cannot break an item, either pick the complete item, or don’t pick it (0-1 property).
+```python
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    W = int(input())
+    values = input().split()
+    weights = input().split()
+    dp = [[0 for i in range(W+1)] for i in range(n+1)]
+    for i in range(n+1):
+        for w in range(W+1):
+            if i == 0 or W == 0:
+                dp[i][w] = 0
+            elif int(weights[i-1]) <= w:
+                dp[i][w] = max(int(values[i-1])+dp[i-1][w - int(weights[i-1])], dp[i-1][w])
+            else:
+                dp[i][w] = dp[i-1][w]
+    print(dp[n][W])
+```
+## 30. DFS of a graph
+```python
+def dfs(g,N):
+    
+    #param g: given adjacency list of graph
+    #param N: number of nodes in N.
+    #return: print the dfs of the graph from node 0, newline is given by driver code
+    visited = [False]*N
+    dfsUtil(g,0,visited)
+def dfsUtil(g,s,visited):
+    visited[s] = True
+    print(s,end= ' ')
+    for i in g[s]:
+        if not visited[i]:
+            dfsUtil(g,i,visited)
+```
+## 31. In Byteland there is a circular colony of N houses . Each house in the colony has some money. The value of money can either be positive or negative. Find the maximum amount of money you can have after robbing any number of contiguous houses.<br>
+Note: Robbing a house having negative money will reduce your money by that amount.<br>
+Input:<br>
+First line of input contains a single integer T which denotes the number of test cases. First line of each test case contains a single integer N which denotes the total number of houses. Second line of each test case contains N space separated integers denoting money in the houses.<br>
+Output:<br>
+For each test case print the maximum money by robbing the consecutive houses.<br>
+User Task:<br>
+The task is to complete the function maxMoney() which returns the maximum money.<br>
+Input:<br>
+3<br>
+7<br>
+8 -8 9 -9 10 -11 12<br>
+8<br>
+10 -3 -4 7 6 5 -4 -1<br>
+8<br>
+-1 40 -14 7 6 5 -4 -1<br>
+Output:<br>
+22<br>
+23<br>
+52<br>
+Explanation:<br>
+Testcase 1: Starting from last house of the colony, robbed 12 units and moving in circular fashion, we can rob  8, -8, 9, -9, 10, which gives maximum robbed monney as 22.<br>
+```python
+def kadane(arr,n):
+    max_so_far = 0
+    max_ending_here = 0
+    for i in range(n):
+        max_ending_here = max(0,max_ending_here+arr[i])
+        max_so_far = max(max_so_far,max_ending_here)
+    return max_so_far
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    l = list(map(int,input().split()))
+    l = [-i for i in l]
+    x = kadane(l,n)
+    l = [-i for i in l]
+    print(max(kadane(l,n),sum(l)+x))
+```
+## 32. Given a Binary Search Tree of size N and 2 nodes value n1 and n2, your task is to find the lowest common ancestor(LCA) of the two nodes .<br>
+Note: Duplicates are not inserted in the BST.<br>
+```python
+def LCA(root,n1,n2):
+    if root == None:
+        return None
+    if root.data > n1 and root.data > n2:
+        return LCA(root.left,n1,n2)
+    if root.data < n1 and root.data < n2:
+        return LCA(root.right,n1,n2)
+    return root
+```
+## 33. Given two binary trees, the task is to find if both of them are identical or not.  <br>
+```python
+def isIdentical(root1, root2):
+    if root1 == None and root2 == None:
+        return 1
+    if root1 is not None and root2 is not None:
+        return ((root1.data == root2.data) and isIdentical(root1.left,root2.left) and isIdentical(root1.right,root2.right))
+    return 0
+```
+## 34. Given a binary tree in which each node element contains a number. Find the maximum possible sum from one leaf node to another.<br>
+```python
+def findsum(root,ans):
+    if root == None:
+        return 0
+    if root.left == None and root.right == None:
+        return root.data
+    ls = findsum(root.left,ans)
+    rs = findsum(root.right,ans)
+    if root.left is not None and root.right is not None:
+        ans[0] = max(ans[0],ls+rs+root.data)
+        return max(ls,rs)+root.data
+    if root.left is None:
+        return rs+root.data
+    if root.right is None:
+        return ls+root.data
+def maxPathSum(root):
+    ans = [-999999]
+    findsum(root,ans)
+    return ans[0]
+```
+## 35. Given a Binary Tree, convert it into its mirror.<br>
+```python
+def mirror(root):
+    
+    if root == None or (root.left == None and root.right == None):
+        return root
+    else:
+        temp = root.right
+        root.right = mirror(root.left)
+        root.left = mirror(temp)
+    return root
+```
+## 36. Given a Binary Tree, print Left view of it. Left view of a Binary Tree is set of nodes visible when tree is visited from Left side. <br>
+```python
+def LeftView(root):
+    if root == None:
+        return
+    print(root.data,end=' ')
+    if root.left:
+        LeftView(root.left)
+    elif root.right:
+        LeftView(root.right)
+```
+## 37. Given a binary tree in which each node element contains a number. Find the maximum possible sum from one leaf node to another.<br>
+```python
+def findsum(root,ans):
+    if root == None:
+        return 0
+    if root.left == None and root.right == None:
+        return root.data
+    ls = findsum(root.left,ans)
+    rs = findsum(root.right,ans)
+    if root.left is not None and root.right is not None:
+        ans[0] = max(ans[0],ls+rs+root.data)
+        return max(ls,rs)+root.data
+    if root.left is None:
+        return rs+root.data
+    if root.right is None:
+        return ls+root.data
+def maxPathSum(root):
+    ans = [-999999]
+    findsum(root,ans)
+    return ans[0]
+```
+## 38. Given a binary tree, find if it is height balanced or not. A tree is height balanced if difference between heights of left and right subtrees is not more than one for all nodes of tree. <br>
+```python
+def solve(root,f):
+    if root == None:
+        return 0
+    l = solve(root.left,f)
+    r = solve(root.right,f)
+    
+    if abs(l-r)>=2:
+        f[0] = False
+        
+    return max(l,r)+1
+
+def isBalanced(root):
+    f = [True]
+    solve(root,f)
+    return f[0]
+```
+## 39. Given a Binary Tree with all unique values and two nodes value n1 and n2. The task is to find the lowest common ancestor of the given two nodes. We may assume that either both n1 and n2 are present in the tree or none of them is present.  <br>
+```python
+def lca(root, n1, n2):
+    if root == None:
+        return None
+    if root.data == n1 or root.data == n2:
+        return root
+    ln = lca(root.left,n1,n2)
+    rn = lca(root.right,n1,n2)
+    if ln and rn:
+        return root
+    if ln:
+        return ln
+    if rn:
+        return rn
+```
+## 40. Complete the function to print spiral order traversal of a tree. For below tree, function should print 1, 2, 3, 4, 5, 6, 7.<br>
+<img src='tree.jpg'></img>
+```python
+from collections import deque
+def printSpiral(root):
+    if root == None:
+        return
+    d1 = deque()#right to left
+    d2 = deque()#left to right
+    d1.append(root)
+    while True:
+        for x in d1:
+            print(x.data,end=' ')
+            if x.right:
+                d2.appendleft(x.right)
+            if x.left:
+                d2.appendleft(x.left)
+        d1.clear()
+        for x in d2:
+            print(x.data,end=' ')
+            if x.left:
+                d1.appendleft(x.left)
+            if x.right:
+                d1.appendleft(x.right)
+        d2.clear()
+        if len(d1) == 0 and len(d2)==0:
+            break
+```
+## 41. You are given a binary tree for which you have to print its vertical order traversal. your task is to complete the function verticalOrder which takes one argument the root of the binary tree and prints the node of the binary tree in vertical order as shown below. If there are multiple nodes passing through a vertical line, then they should be printed as they appear in level order traversal.<br>
+```python
+from collections import OrderedDict
+def verticalOrder(root):
+    if root == None:
+        return
+    dist = {}#m
+    nodes = {}#hd_nodes
+    queue = []
+    queue.append(root)
+    dist[0] = [root.data]
+    nodes[root] = 0
+    while queue:
+        temp = queue.pop(0)
+        if temp.left:
+            queue.append(temp.left)
+            nodes[temp.left] = nodes[temp] - 1
+            h = nodes[temp.left]
+            if dist.get(h) is None:
+                dist[h] = []
+            dist[h].append(temp.left.data)
+        if temp.right:
+            queue.append(temp.right)
+            nodes[temp.right] = nodes[temp] + 1
+            h = nodes[temp.right]
+            if dist.get(h) is None:
+                dist[h] = []
+            dist[h].append(temp.right.data)
+    s = OrderedDict(sorted(dist.items()))
+    for i in s.values():
+        for j in i:
+            print(j,end=' ')
+```
+## 42. Given a binary tree, print the bottom view from left to right. A node is included in bottom view if it can be seen when we look at the tree from bottom. If there are multiple bottom-most nodes for a horizontal distance from root, then print the later one in level traversal. <br>
+```python
+from collections import OrderedDict
+def bottomView(root):
+    if root == None:
+        return
+    queue = []
+    nodes = {}
+    dist = {}
+    
+    queue.append(root)
+    nodes[root] = 0
+    dist[0] = root.data
+    
+    while queue:
+        temp = queue.pop(0)
+        if temp.left:
+            queue.append(temp.left)
+            nodes[temp.left] = nodes[temp] - 1
+            h = nodes[temp.left]
+            if dist.get(h) is None:
+                dist[h] = 0
+            dist[h] = temp.left.data
+        if temp.right:
+            queue.append(temp.right)
+            nodes[temp.right] = nodes[temp] + 1
+            h = nodes[temp.right]
+            if dist.get(h) is None:
+                dist[h] = 0
+            dist[h] = temp.right.data
+    
+    x = OrderedDict(sorted(dist.items()))
+    
+    for i in x.values():
+        print(i,end=' ')
+```
+## 43. Given a binary tree, return true if it is BST, else false<br>
+```python
+def util(node,maxi,mini):
+    if node is None:
+        return 1
+    if (node.data > maxi) or (node.data < mini):
+        return 0
+    return util(node.left,node.data-1,mini) and util(node.right,maxi,node.data+1)
+def isBST(node):
+    maxi = 4294967296
+    mini = -4294967296
+    return util(node,maxi,mini)
+```
+## 44. Given a binary tree, connect the nodes that are at same level.Structure of the given Binary Tree node is like following.<br>
+struct Node<br>
+{<br>
+      int data;<br>
+      Node* left;<br>
+      Node* right;<br>
+      Node* nextRight;<br>
+}<br>
+Initially, all the nextRight pointers point to garbage values. Your function should set these pointers to point next right for each node.<br>
+```python
+def connect(root):
+    if root == None:
+        return
+    queue = []
+    queue.append(root)
+    temp = None
+    while queue:
+        n = len(queue)
+        for i in range(n):
+            prev = temp
+            temp = queue.pop(0)
+            if i > 0:
+                prev.nextRight = temp
+            if temp.left:
+                queue.append(temp.left)
+            if temp.right:
+                queue.append(temp.right)
+        temp.nextRight = None
+```
+## 45. Serialization is to store a tree in an array so that it can be later restored and Deserialization is reading tree back from the array. Now your task is to complete the function serialize which stores the tree into an array A[ ] and deSerialize which deserializes the array to tree and returns it.<br>
+```python
+def serialize(root, arr):
+    if root == None:
+        arr.append(-1)
+        return
+    arr.append(root.data)
+    serialize(root.left,arr)
+    serialize(root.right,arr)
+    
+def util(arr,i):
+    if i[0] >= len(arr) or arr[i[0]] == -1:
+        i[0]+=1
+        return None
+    root = Node(arr[i[0]])
+    i[0] += 1
+    root.left = util(arr,i)
+    root.right = util(arr,i)
+    return root
+
+def deSerialize(arr):
+    i = [0]
+    return util(arr,i)
+```
+## 46. Given a Binary Tree (BT), convert it to a Doubly Linked List(DLL) In-Place. The left and right pointers in nodes are to be used as previous and next pointers respectively in converted DLL. The order of nodes in DLL must be same as Inorder of the given Binary Tree. The first node of Inorder traversal (left most node in BT) must be head node of the DLL.<br>
+```python
+def inorder(root,l):
+    if root.left:
+        inorder(root.left,l)
+    l.append(root)
+    if root.right:
+        inorder(root.right,l)
+def bToDLL(root):
+    l = []
+    inorder(root,l)
+    for i in range(len(l)-1):
+        if i == 0:
+            l[i].left = None
+        else:
+            l[i].left = l[i-1]
+        l[i].right = l[i+1]
+    l[-1].right = None
+    if len(l)>1:
+        l[-1].left = l[-2]
+    return l[0]
+```
+## 47. Two of the nodes of a Binary Search Tree (BST) are swapped. Fix (or correct) the BST.<br>
+```python
+def correctBST(root):
+    l = []
+    inorder(root,l)
+    
+    first = -1
+    second = -1
+    count = 0
+    
+    for i in range(1,len(l)):
+        if l[i].data < l[i-1].data:
+            if count == 0:
+                first = i
+                count += 1
+            elif count == 1:
+                second = i
+                count += 1
+        if count == 2:
+            break
+    
+    if second == -1:
+        l[first].data,l[first-1].data = l[first-1].data,l[first].data
+    else:
+        l[first].data,l[second].data = l[second].data,l[first].data
+```
+## 48. Given a Binary Tree, find diameter of it. The diameter of a tree is the number of nodes on the longest path between two leaves in the tree. The diagram below shows two trees each with diameter nine, the leaves that form the ends of a longest path are shaded (note that there is more than one path in each tree of length nine, but no path longer than nine nodes).<br>
+```python
+def solve(root,ans):
+    if root == None:
+        return 0
+    if root.left == None and root.right:
+        t = solve(root.right,ans)
+        ans[0] = max(ans[0],t+1)
+        return t+1
+    if root.right == None and root.left:
+        t = solve(root.left,ans)
+        ans[0] = max(ans[0],t+1)
+        return t+1
+    l = solve(root.left,ans)
+    r = solve(root.right,ans)
+    total = l+r+1
+    ans[0] = max(ans[0],total)
+    return 1+max(l,r)
+    
+def diameter(root):
+    ans = [0]
+    solve(root,ans)
+    return ans[0]
+```
+## 49. Topological Sort of a Directed Acyclic Graph.<br>
+```python
+def topologicalSortUtil(s,graph,visited,stack):
+    visited[s] = True
+    for i in graph[s]:
+        if not visited[i]:
+            topologicalSortUtil(i,graph,visited,stack)
+    stack.insert(0,s)
+
+def topoSort(n, graph):
+    visited = [False]*n
+    stack = []
+    for i in range(n):
+        if not visited[i]:
+            topologicalSortUtil(i,graph,visited,stack)
+    return stack
+```
+## 50. Detect cycle in an undirected graph.<br>
+```python
+def isCyclicUtil(i,parent,g,visited):
+    visited[i] = True
+    for x in g[i]:
+        if not visited[x]:
+            if isCyclicUtil(x,i,g,visited):
+                return True
+        elif x != parent:
+            return True
+    return False
+
+def isCyclic(g,n):
+    visited = [False]*n
+    for i in range(n):
+        if not visited[i]:
+            if isCyclicUtil(i,-1,g,visited):
+                return 1
+    return 0
+```
+## 51. Detect cycle in directed graph.<br>
+Method - 1 : Khan's Algorithm<br>
+```python
+def isCyclic(n, g):
+    
+    indeg = [0]*n
+    for i in range(n):
+        for x in g[i]:
+            indeg[x] += 1
+    
+    queue = []
+    for i in range(n):
+        if indeg[i] == 0:
+            queue.append(i)
+    
+    count = 0
+    while queue:
+        t = queue.pop(0)
+        count += 1
+        for x in g[t]:
+            indeg[x]-=1
+            if indeg[x] == 0:
+                queue.append(x)
+    
+    if count != n:
+        return True
+    else:
+        return False
+```
+Method - 2 :
+```python
+def isCyclicUtil(i,g,visited,recStack):
+    visited[i] = True
+    recStack[i] = True
+    for x in g[i]:
+        if not visited[x]:
+            if isCyclicUtil(x,g,visited,recStack):
+                return True
+        elif recStack[x] == True:
+            return True
+    recStack[i] = False
+    return False
+
+def isCyclic(n, g):
+    visited = [False]*n
+    recStack = [False]*n
+    for i in range(n):
+        if not visited[i]:
+            if isCyclicUtil(i,g,visited,recStack):
+                return 1
+    return 0
+```
+## 52. Dijkshtra's Algorithm for Adjacency Matrix.<br>
+```Python
+def minDistance(dist,spt,n):
+    min = sys.maxsize
+    for i in range(n):
+        if dist[i]<min and spt[i] == False:
+            min = dist[i]
+            min_index = i
+    return min_index
+def dijkstra(src, n, graph):
+    dist = [sys.maxsize]*n
+    dist[src] = 0
+    spt = [False]*n
+    for c in range(n):
+        u = minDistance(dist,spt,n)
+        spt[u] = True
+        for v in range(n):
+            if graph[u][v]>0 and spt[v] == False and dist[v]>dist[u]+graph[u][v]:
+                dist[v] = dist[u]+graph[u][v]
+    for i in range(n):
+        print(dist[i],end=' ')
+    print()
+```
+## 53. Given a N X N matrix (M) filled with 1, 0, 2, 3. The task is to find whether there is a path possible from source to destination, while traversing through blank cells only. You can traverse up, down, right and left.<br>
+
+    A value of cell 1 means Source.
+    A value of cell 2 means Destination.
+    A value of cell 3 means Blank cell.
+    A value of cell 0 means Blank Wall.
+Note : there is only single source and single destination.<br>
+```python
+def dfs(i,j,b,vis,n):
+    if i<0 or i>=n or j<0 or j>=n or vis[i][j]==1 or b[i][j]==0:
+        return 0
+    vis[i][j] = 1
+    if b[i][j] == 2:
+        return 1
+    if dfs(i+1,j,b,vis,n) or dfs(i-1,j,b,vis,n) or dfs(i,j+1,b,vis,n) or dfs(i,j-1,b,vis,n):
+        return 1
+    return 0
+
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    arr = list(map(int,input().split()))
+    b = [[0 for j in range(n)] for i in range(n)]
+    vis = [[0 for j in range(n)] for i in range(n)]
+    k = 0
+    v,w=-1,-1
+    for i in range(n):
+        for j in range(n):
+            b[i][j] = int(arr[k])
+            if int(arr[k]) == 1:
+                v,w = i,j
+            k += 1
+    if dfs(v,w,b,vis,n):
+        print(1)
+    else:
+        print(0)
+```
+## 54. Given a snake and ladder board of order 5x6, find the minimum number of dice throws required to reach the destination or last cell (30th cell) from source (1st cell) .Example:
+<img src='snakenladder.jpg'></img>
+For the above board output will be 3<br> 
+For 1st throw get a 2<br>
+For 2nd throw get a 6<br>
+For 3rd throw get a 2<br>
+**Input**<br>
+The first line of input contains an integer T denoting the no of test cases. Then T test cases follow. Each test case contains two lines. The first line of input contains an integer N denoting the no of ladders and snakes present. Then in the next line are 2\*N space separated values a,b which denotes a ladder or a snake at position 'a' which takes to a position 'b'.<br>
+```python
+class q:
+    def __init__(self,v=0,dist=0):
+        self.v = v
+        self.dist = dist
+def getminmoves(move,visited):
+    queue = []
+    visited[0] = True
+    queue.append(q(0,0))
+    qe = q()
+    while queue:
+        qe = queue.pop(0)
+        v = qe.v
+        if v == 29:
+            break
+        j = v+1
+        while j <= v+6 and j< 30:
+            if not visited[j]:
+                a = q()
+                a.dist = qe.dist+1
+                visited[j] = True
+                a.v = move[j] if move[j] != -1 else j
+                queue.append(a)
+            j+=1
+    return qe.dist
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    arr =list(map(int,input().split()))
+    move = [-1 for i in range(30)]
+    for i in range(0,n+1,2):
+        move[arr[i]-1] = arr[i+1]-1
+    visited = [False]*30
+    # print('arr = ',arr)
+    # print('move = ',move)
+    print(getminmoves(move,visited))
+```
+## 55. Given an array of N distinct elements A[ ]. The task is to find the minimum number of swaps required to sort the array. Your are required to complete the function which returns an integer denoting the minimum number of swaps, required to sort the array.<br>
+```python
+from collections import defaultdict
+def dfs(src,g,visited,l):
+    visited[src] = True
+    l.append(src)
+    for x in g[src]:
+        if not visited[x]:
+            dfs(x,g,visited,l)
+def minSwaps(arr, n):
+    g = defaultdict(list)
+    for i in range(n):
+        g[i] = []
+    sarr = sorted(arr)
+    for i in range(n):
+        j = sarr.index(arr[i])
+        if i != j :
+            g[i].append(j)
+    visited = [False]*n
+    ans = 0
+    for i in range(n):
+        if not visited[i]:
+            l = []
+            dfs(i,g,visited,l)
+            ans += (len(l)-1)
+    return ans
+```
+## 56. 
