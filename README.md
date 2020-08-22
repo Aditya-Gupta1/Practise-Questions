@@ -1292,4 +1292,205 @@ def minSwaps(arr, n):
             ans += (len(l)-1)
     return ans
 ```
-## 56. 
+# Questions from InterviewBit
+
+## 56. (Non Negative Sub Array)Given an array of integers, A of length N, find out the maximum sum sub-array of non negative numbers from A.
+
+The sub-array should be contiguous i.e., a sub-array created by choosing the second and fourth element and skipping the third element is invalid.
+
+Maximum sub-array is defined in terms of the sum of the elements in the sub-array.
+
+Find and return the required subarray.
+
+NOTE:
+
+    If there is a tie, then compare with segment's length and return segment which has maximum length.
+    If there is still a tie, then return the segment with minimum starting index
+```python
+def maxset(self, A):
+        i=0
+        max_ = -1
+        ans = []
+        while i<len(A):
+            while i<len(A) and A[i]<0:
+                i += 1
+            l = []
+            while i<len(A) and A[i]>=0:
+                l.append(A[i])
+                i += 1
+            if sum(l)>max_:
+                ans = l
+                max_ = sum(l)
+        return ans
+```
+## 57. (Maximum Sum Continuous Subarray) Find the contiguous subarray within an array, A of length N which has the largest sum.
+```python
+def maxSubArray(self, a):
+        n = len(a)
+        max_curr = 0
+        max_so_far = float('-inf')
+        for i in range(n):
+            max_curr += a[i]
+            max_so_far = max(max_so_far, max_curr)
+            max_curr = max(max_curr, 0)
+        return max_so_far
+```
+## 58. You are given an array of N integers, A1, A2 ,…, AN. Return maximum value of f(i, j) for all 1 ≤ i, j ≤ N. f(i, j) is defined as |A[i] - A[j]| + |i - j|, where |x| denotes absolute value of x.
+```python
+def maxArr(self, a):
+        n = len(a)
+        a1 = []
+        b = []
+        for i in range(n):
+            a1.append(a[i]+i)
+            b.append(a[i]-i)
+            
+        return max(max(a1) - min(a1), max(b) - min(b))
+#https://www.interviewbit.com/problems/maximum-absolute-difference/
+```
+<i>**Note: To rotate a matrix 90 degree anti-clockwise, first reverse all the elements of every row and then take the transpose of the matrix. To find the 90 degree clockwise matrix, first take transpose then reverse each row.**</i>
+## 59. Given a list of non negative integers, arrange them such that they form the largest number.For example:
+
+Given [3, 30, 34, 5, 9], the largest formed number is 9534330.
+
+Note: The result may be very large, so you need to return a string instead of an integer.
+```python
+from functools import cmp_to_key
+def largestNumber(self, A):
+        A = map(str, A)
+        key = cmp_to_key(lambda a,b: 1 if a+b >= b+a else -1)
+        res = ''.join(sorted(A, key= key, reverse=True))
+        # Must left trim 0, apparently
+        res = res.lstrip('0')
+        return res if res else '0'
+```
+## 60. (Next Greater Permuatation) Implement the next permutation, which rearranges numbers into the numerically next greater permutation of numbers for a given array A of size N.
+
+If such arrangement is not possible, it must be rearranged as the lowest possible order i.e., sorted in an ascending order.
+Note:
+1. The replacement must be in-place, do **not** allocate extra memory.
+2. DO NOT USE LIBRARY FUNCTION FOR NEXT PERMUTATION. Use of Library functions will disqualify your submission retroactively and will give you penalty points.
+```python
+def nextPermutation(a):
+        n = len(a)
+        i = -1
+        #check for highest i such that a[i] < a[i+1]
+        for idx in range(n-1):
+            if a[idx]<a[idx+1]:
+                i = idx
+        # If i not found, return sorted array in ascending order
+        if i == -1:
+            a.sort()
+            return a
+        else:
+            # If i found, find highest j such that a[j] > a[i]
+            j = -1
+            for idx in range(i+1, n):
+                if a[idx] > a[i]:
+                    j = idx
+            #swap a[i] and a[j]
+            a[i], a[j] = a[j], a[i]
+            #reverse array after a[i]
+            a[i+1:] = reversed(a[i+1:])
+            
+            return a
+```
+
+## 61. Given a positive integer n and a string s consisting only of letters D or I, you have to find any permutation of first n positive integer that satisfy the given input string.
+
+D means the next number is smaller, while I means the next number is greater.
+
+Notes
+
+    Length of given string s will always equal to n - 1
+    Your solution should run in linear time and space.
+
+Example :
+
+Input 1:
+
+n = 3
+
+s = ID
+
+Return: [1, 3, 2]
+
+```python
+def findPerm(self, a, x):
+        #initialize variables
+        n = len(a) # n = x-1
+        i = 1
+        d = x
+        res = [0]*(x)
+        #iterate over the string
+        for idx, ch in enumerate(a):
+            if ch == 'I':
+                res[idx] = i
+                i += 1
+            else:
+                res[idx] = d
+                d -= 1
+        if a[-1] == 'I':
+            res[-1] = res[-2]+1
+        else:
+            res[-1] = res[-2]-1
+        #return the output
+        return res
+```
+## 62. You are in an infinite 2D grid where you can move in any of the 8 directions. You are given a sequence of points and the order in which you need to cover the points.. Give the minimum number of steps in which you can achieve it. You start from the first point. Given two integer arrays A and B, where A[i] is x coordinate and B[i] is y coordinate of ith point respectively. Return an Integer, i.e minimum number of steps.
+Input 1:
+
+A = [0, 1, 1]
+B = [0, 1, 2]
+
+Output 1:
+
+2 
+ ```python
+ def coverPoints(self, arr, brr):
+        #initialization
+        n = len(arr)
+        result = 0
+        
+        #iterate over arrays
+        for i in range(n-1):
+            steps = max(abs(arr[i] - arr[i+1]), abs(brr[i] - brr[i+1]))
+            result += steps
+            
+        #return the results
+        return result
+```
+## 63. Given an array of integers, sort the array into a wave like array and return it,
+In other words, arrange the elements into a sequence such that a1 >= a2 <= a3 >= a4 <= a5.....Given [1, 2, 3, 4]
+
+One possible answer : [2, 1, 4, 3]
+Another possible answer : [4, 1, 3, 2]
+
+    NOTE : If there are multiple answers possible, return the one thats lexicographically smallest.
+    So, in example case, you will return [2, 1, 4, 3] 
+```python
+def wave(self, a):
+        n = len(a)
+        a.sort()
+        for i in range(0,n-1,2):
+            a[i], a[i+1] = a[i+1], a[i]
+        return a
+```
+## 64. Given a collection of intervals, merge all overlapping intervals. For example: Given [1,3],[2,6],[8,10],[15,18], return [1,6],[8,10],[15,18]. Make sure the returned intervals are sorted.
+```python
+def merge(self, arr):
+        # print(arr)
+        n = len(arr)
+        arr.sort(key= lambda x: x.start)
+        res = [arr[0]]
+        for i in range(1, n):
+            if res[-1].end < arr[i].start:
+                res.append(arr[i])
+            elif res[-1].end > arr[i].end:
+                continue
+            else:
+                res[-1].end= arr[i].end
+                
+        return res
+```
+## 65. 
